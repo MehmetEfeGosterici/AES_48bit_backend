@@ -40,7 +40,7 @@ def shiftRows(x):
     shiftcount = 0
     for i in range(len(x)):
         x[i] = np.roll(x[i], shiftcount)
-        shiftcount += 1
+        shiftcount += 3
     return x
 
 
@@ -51,49 +51,51 @@ def rotWord(x):
 def temporary(x,num):
     array = rotWord(x)
     temp = [0 for i in range(len(array))]
-    print(array,"\n\n\n")
+    #print(array,"\n\n\n")
     for i in range(len(array)):
         array[i] = subBytes(array[i])
-    print(array,"\n\n\n")
+    #print(array,"\n\n\n")
     for i in range(len(array)):
         temp[i] = xorTable[int(hex(int(rconTable[num][i],2)).replace("0x",""))][int(hex(int(array[i],2)).replace("0x",""))]
-    print(temp,"\n\n\n")
+    #print(temp,"\n\n\n")
     return temp
 
 
 
 
-
-for i in range(4):
-    temp = []
-    for j in range(4):
-        integer = Random().randint(0,7)
-        binary = bin(integer).replace("0b","")
-        reverse =binary[::-1]
-        while len(reverse)<3:
-            reverse += "0"
-        binary = reverse[::-1]
-        temp.append(binary)
-    keys.append(temp);
-
-print(np.matrix(keys),"\n\n\n")
-
-for i in range(4,36):
-    if(i%4==0):
-        key = [0 for x in range(4)]
-        tempArray = (temporary(keys[i-1],int(i/4-1)))
-        temporarys.append(tempArray)
+def keyGen():
+    for i in range(4):
+        temp = []
         for j in range(4):
-            key[j] = xorTable[int(hex(int(tempArray[j],2)).replace("0x",""))][int(hex(int(keys[i-4][j],2)).replace("0x",""))]
-        keys.append(key)
-    else:
-        key = [0 for i in range(4)]
-        for j in range(4):
-            key[j] = xorTable[int(hex(int(keys[i-1][j],2)).replace("0x",""))][int(hex(int(keys[i-4][j],2)).replace("0x",""))]
-        keys.append(key)
+            integer = Random().randint(0,7)
+            binary = bin(integer).replace("0b","")
+            reverse =binary[::-1]
+            while len(reverse)<3:
+                reverse += "0"
+            binary = reverse[::-1]
+            temp.append(binary)
+        keys.append(temp);
 
-print(np.matrix(keys),"\n\n")
-print("T values\n",np.matrix(temporarys))
+    #print(np.matrix(keys))
+
+    for i in range(4,36):
+        if(i%4==0):
+            key = [0 for x in range(4)]
+            tempArray = (temporary(keys[i-1],int(i/4-1)))
+            temporarys.append(tempArray)
+            for j in range(4):
+                key[j] = xorTable[int(hex(int(tempArray[j],2)).replace("0x",""))][int(hex(int(keys[i-4][j],2)).replace("0x",""))]
+            keys.append(key)
+        else:
+            key = [0 for i in range(4)]
+            for j in range(4):
+                key[j] = xorTable[int(hex(int(keys[i-1][j],2)).replace("0x",""))][int(hex(int(keys[i-4][j],2)).replace("0x",""))]
+            keys.append(key)
+    print("Round Keys\n",np.matrix(keys),"\n\n")
+    print("T values\n",np.matrix(temporarys))
+    return keys
+
+
 
 
 
