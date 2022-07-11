@@ -1,8 +1,7 @@
 from random import Random
 import numpy as np
 
-keys = []
-temporarys = []
+
 xorTable = [["000", "001", "010", "011", "100", "101", "110", "111"],
             ["001", "000", "011", "010", "101", "100", "111", "110"],
             ["010", "011", "000", "001", "110", "111", "100", "101"],
@@ -65,6 +64,8 @@ def temporary(x, num):
 
 
 def keyGen():
+    keys = []
+    temporarys = []
     for i in range(4):
         temp = []
         for j in range(4):
@@ -76,9 +77,6 @@ def keyGen():
             binary = reverse[::-1]
             temp.append(binary)
         keys.append(temp)
-
-    # print(np.matrix(keys))
-
     for i in range(4, 36):
         if(i % 4 == 0):
             key = [0 for x in range(4)]

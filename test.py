@@ -1,11 +1,11 @@
-from keygen import shiftRows, subBytes,xorTable
+from keygen import keyGen, shiftRows, subBytes,xorTable
 import numpy as np
-
+import re
 
 test = [["000", "100", "000", "000"],
-        ["000", "100", "000", "000"],
-        ["000", "100", "000", "000"],
-        ["000", "100", "000", "000"], ]
+        ["000", "101", "000", "000"],
+        ["000", "110", "000", "000"],
+        ["000", "111", "000", "000"], ]
 
 mixColumnsArray = [["001", "010", "100", "110"],
                    ["010", "001", "110", "100"],
@@ -20,14 +20,15 @@ mixColumnsMultiplication = [["---", "---", "---", "---", "---", "---", "---", "-
                             ["---", "---", "---", "---", "---", "---", "---", "---"],
                             ["000", "110", "111", "001", "101", "011", "010", "100"]]
 
-
-def encryptionRound(block):
+def encryptionRound(block,afterSubBytes,afterShiftRows,afterMixColumns):
     for i in range(4):
         for j in range(4):
             block[i][j] = subBytes(block[i][j])
-    #print("afterSubBytes\n",np.matrix(block))
+    afterSubBytes.append(block)
+    print("afterSubBytes\n",np.matrix(block))
     shiftRows(block)
-    #print("afterShiftRows\n",np.matrix(block))
+    afterShiftRows.append(block)
+    print("afterShiftRows\n",np.matrix(block))
 
     temp = [] 
     xor_arr = "000"
@@ -40,5 +41,35 @@ def encryptionRound(block):
             xor_arr = "000"
         temp.append(temp2)
     block = temp
-    print("---------------\n","afterMixColumns\n",np.matrix(block))
+    #print("---------------\n","afterMixColumns\n",np.matrix(block))
+    afterMixColumns.append(block)
     return block
+
+#keys = keyGen()
+
+def keysToArray(keys):
+    newKeys = []
+    temp = []
+    for i in range(len(keys)):
+        for x in range(len(keys[i])):
+            # print(keys[i][x])
+            temp.append(keys[i][x])
+            if(len(temp) == 16):
+                # print(temp)
+                newKeys.append(temp)
+                temp = []
+    #print(newKeys)
+    # for i in range(len(newKeys)):
+    #     # print("--",np.matrix(newKeys[i]))
+    return newKeys
+
+#keysToArray(keys)
+
+# def mixcolumns(block):
+#     array = np.rot90(block)[::-1]
+#     print(np.matrix(array))
+#     array = np.rot90(block,k=4)
+#     print(np.matrix(array))
+   
+
+# mixcolumns(test)
